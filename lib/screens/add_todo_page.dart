@@ -58,36 +58,42 @@ class _AddTodoPageState extends State<AddTodoPage> {
       "description": description,
       "is_completed": false
     };
-
     const url = "https://api.nstack.in/v1/todos";
     final uri = Uri.parse(url);
 
-    final response = await http.post(uri,
-        body: jsonEncode(body), headers: {'Content-Type': ' application/json'});
+    final response = await http.post(
+      uri,
+      body: jsonEncode(body),
+      headers: {'Content-Type': 'application/json'},
+    );
 
-    if(response.statusCode==201){
-      titleController.text='';
-      descriptionController.text='';
+    if (response.statusCode == 201) {
+      titleController.text = '';
+      descriptionController.text = '';
       showSuccessMessage("Creation Success");
       print("Creation Success");
-
-    }else{
+      print(response.body);
+    } else {
       showErrorMessage("Creation Failed");
       print("Creation Failed");
       print(response.statusCode);
       print(response.body);
     }
-
   }
 
-  void showSuccessMessage(String message){
-
-    final snackBar=SnackBar(content: Text(message));
+  void showSuccessMessage(String message) {
+    final snackBar = SnackBar(content: Text(message));
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
-  void showErrorMessage(String message){
-    final snackBar=SnackBar(content: Text(message,style:const TextStyle(color: Colors.white),),backgroundColor: Colors.red,);
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
+  void showErrorMessage(String message) {
+    final snackBar = SnackBar(
+      content: Text(
+        message,
+        style: const TextStyle(color: Colors.white),
+      ),
+      backgroundColor: Colors.red,
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }
