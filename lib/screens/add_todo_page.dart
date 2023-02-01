@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class AddTodoPage extends StatefulWidget {
-  const AddTodoPage({Key? key}) : super(key: key);
+  final Map? todo;
+  const AddTodoPage({Key? key, this.todo}) : super(key: key);
 
   @override
   State<AddTodoPage> createState() => _AddTodoPageState();
@@ -13,11 +14,23 @@ class AddTodoPage extends StatefulWidget {
 class _AddTodoPageState extends State<AddTodoPage> {
   final titleController = TextEditingController();
   final descriptionController = TextEditingController();
+  bool isEdit = false;
+
+  @override
+  void initState() {
+    if (widget.todo != null) {
+      isEdit = true;
+      titleController.text = widget.todo!['title'];
+      descriptionController.text = widget.todo!['description'];
+    }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Todo"),
+        title: Text(isEdit ? "Edit todo" : "Add Todo"),
       ),
       body: ListView(
         padding: const EdgeInsets.all(20),
@@ -42,12 +55,46 @@ class _AddTodoPageState extends State<AddTodoPage> {
             height: 20,
           ),
           ElevatedButton(
-            onPressed: submitData,
-            child: const Text("Submit"),
+            onPressed:isEdit ? updateData : submitData,
+
+            child: Text(isEdit ? "Update" : "Submit"),
           )
         ],
       ),
     );
+  }
+
+  Future<void> updateData() async {
+    final todo = widget.todo;
+    if (todo == null) {
+      print("You can not call update without todo data");
+      return;
+    }
+    final id = todo['_id'];
+    final title = titleController.text;
+    final description = descriptionController.text;
+    final body = {
+      "title": title,
+      "description": description,
+      "is_completed": false
+    };
+    final url = "https://api.nstack.in/v1/todos/$id";
+    final uri = Uri.parse(url);
+
+    final response = await http.put(
+      uri,
+      body: jsonEncode(body),
+      headers: {'Content-Type': 'application/json'},
+
+    );
+
+    print("Updated check${response.body}");
+
+    if(response.statusCode==200){
+      showSuccessMessage("Updation Success");
+    }else{
+      showErrorMessage("Updation Failed");
+    }
   }
 
   Future<void> submitData() async {

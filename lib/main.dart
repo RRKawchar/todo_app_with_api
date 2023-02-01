@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app_with_api/screens/todo_list_page.dart';
 
-import 'location_test.dart';
 
 void main() {
   runApp(const MyApp());
