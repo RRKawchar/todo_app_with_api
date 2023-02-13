@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_app_with_api/demo2/location_screen.dart';
 import 'package:todo_app_with_api/screens/todo_list_page.dart';
 
 
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Todo App',
       theme: ThemeData.dark(),
-      home: const TodoListPage(),
+      home: DataDisplay(),
     );
   }
 }
